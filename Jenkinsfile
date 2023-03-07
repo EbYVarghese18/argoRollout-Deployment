@@ -85,7 +85,7 @@ pipeline {
             steps {
                 sh "aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin ${ECR_REPOSITORY}"
                 sh "helm pull oci://${ECR_REPOSITORY}/${CHART_NAME} --version ${CHART_VERSION} --untar"
-                sh "kubectl applly -f argocd.yaml"
+                sh "kubectl apply -f argocd.yaml"
             }
         }
 
