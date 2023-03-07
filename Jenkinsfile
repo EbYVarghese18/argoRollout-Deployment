@@ -88,10 +88,18 @@ pipeline {
             }
         }
 
+        // stage('argo deployment') {
+        //     steps {
+        //         script {
+        //             sh "argocd app create ${APP_NAME} --repo ${APP_NAME}/ --path ${APP_NAME}/ --server 192.168.59.107 --helm-set image.tag=0.${BUILD_NUMBER}"
+        //         }
+        //     }
+        // }
+
         stage('argo deployment') {
             steps {
                 script {
-                    sh "argocd app create ${APP_NAME} --repo ${APP_NAME}/ --path ${APP_NAME}/ --server 192.168.59.107 --helm-set image.tag=0.${BUILD_NUMBER}"
+                    sh "kubectl applly -f argocd.yaml"
                 }
             }
         }
