@@ -61,11 +61,11 @@ pipeline {
                     echo 'creating helm chart'
                     sh "helm create ${CHART_NAME}"
 
+                    echo 'copying argocd yaml file'
+                    sh "cp argocd.yaml ${CHART_NAME}/ "
+
                     echo 'updating image tag in value file'
                     sh "sed -i 's|tag: \".*\"|tag: \"0.${BUILD_NUMBER}\"|' ${CHART_NAME}/values.yaml"
-
-                    // echo 'updating the repository field'
-                    // sh "sed -i 's|repository: \".*\"|repository: \"${ECR_REPOSITORY}/${APP_NAME}:latest\"|' ${CHART_NAME}/values.yaml"
 
                     echo 'Builing helm package'
                     sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"
@@ -81,9 +81,38 @@ pipeline {
             }
         }
 
-        // stage('Invoke Build Number to Pipeline appnginx-pullanddeploy') {
+        stage("Pull helm chart from ECR") {
+            steps {
+                sh "aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin ${ECR_REPOSITORY}"
+                sh "helm pull oci://${ECR_REPOSITORY}/${CHART_NAME} --version ${CHART_VERSION} --untar"
+            }
+        }
+
+        stage('argo deployment') {
+            steps {
+                script {
+                    sh "argocd app create ${APP_NAME} --repo ${ECR_REPOSITORY} --path <helm-chart-path> --dest server:https://kubernetes.default.svc --helm-set image.tag=0.${BUILD_NUMBER}"
+                }
+            }
+        }
+
+        // stage("Deploy to Minikube") {
         //     steps {
-        //         build job: 'appnginx-pullanddeploy', parameters : [[ $class: 'StringParameterValue', name: 'buildnumber', value: "${BUILD_NUMBER}"]]
+        //         sh 'minikube start --driver=docker --container-runtime=containerd --force'
+
+        //         sh 'helm list -A'
+        //         sh 'kubectl get po -A'
+
+        //         sh "helm install myappnginx ${CHART_NAME}/"
+
+        //         // sh "helm upgrade --install myappnginx ${CHART_NAME} --set image.repository=${ECR_REPOSITORY}/${CHART_NAME},image.tag= 0.${params.buildnumber}"
+        //         // sh 'helm upgrade --install myappnginx --version 0.${params.buildnumber} ${CHART_NAME}'
+        //         // sh 'minikube kubectl get po -A'
+        //     }
+        // }
+        // stage('Cleaning up') {
+        //     steps {
+        //         sh 'rm -r ${CHART_NAME}'
         //     }
         // }
 
