@@ -91,7 +91,7 @@ pipeline {
         stage('argo deployment') {
             steps {
                 script {
-                    sh "argocd app create ${APP_NAME} --repo ${ECR_REPOSITORY} --path <helm-chart-path> --dest server:https://kubernetes.default.svc --helm-set image.tag=0.${BUILD_NUMBER}"
+                    sh "argocd app create ${APP_NAME} --repo ${APP_NAME}/ --path ${APP_NAME}/ --dest server:https://kubernetes.default.svc --helm-set image.tag=0.${BUILD_NUMBER}"
                 }
             }
         }
