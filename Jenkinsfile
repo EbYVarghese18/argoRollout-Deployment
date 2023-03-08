@@ -74,9 +74,9 @@ pipeline {
                     sh "aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin ${ECR_REPOSITORY}"
                     sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}"
                     
-                    echo 'Cleanig up the files'
-                    sh "rm -rf ${CHART_NAME}"
-                    sh "rm -rf ${CHART_NAME}-${CHART_VERSION}.tgz"
+                    // echo 'Cleanig up the files'
+                    // sh "rm -rf ${CHART_NAME}"
+                    // sh "rm -rf ${CHART_NAME}-${CHART_VERSION}.tgz"
                 }       
             }
         }
@@ -91,7 +91,7 @@ pipeline {
 
         stage("Deployment from Github") {
             steps {
-                sh 'kubectl create -f application.yaml'
+                sh 'kubectl --server=https://192.168.59.107:8443 create -f argocd.yaml'
                 // sh "argocd app create myapp     --repo https://github.com/EbYVarghese18/argocd.git     --path dev    --dest-server https://kubernetes.default.svc     --dest-namespace default     --sync-policy automated     --auto-prune     --self-heal    --revision HEAD     --project default"
             }
         }
