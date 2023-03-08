@@ -91,7 +91,8 @@ pipeline {
 
         stage("Deployment from Github") {
             steps {
-                sh "argocd app create myapp     --repo https://github.com/EbYVarghese18/argocd.git     --path dev    --dest-server https://kubernetes.default.svc     --dest-namespace default     --sync-policy automated     --auto-prune     --self-heal    --revision HEAD     --project default"
+                sh 'kubectl create -f application.yaml'
+                // sh "argocd app create myapp     --repo https://github.com/EbYVarghese18/argocd.git     --path dev    --dest-server https://kubernetes.default.svc     --dest-namespace default     --sync-policy automated     --auto-prune     --self-heal    --revision HEAD     --project default"
             }
         }
 

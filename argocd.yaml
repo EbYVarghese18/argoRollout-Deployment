@@ -10,8 +10,8 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-    path: .
-    repoURL: 
+    path: 
+    repoURL: https://github.com/EbYVarghese18/argocd.git
     targetRevision: latest
   syncPolicy:
     automated:
