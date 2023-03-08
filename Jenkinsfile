@@ -11,7 +11,7 @@ pipeline {
         CHART_VERSION = '0.${BUILD_NUMBER}'
         ECR_REPOSITORY = '095919053879.dkr.ecr.us-east-1.amazonaws.com'
         SERVER_URL = "https://192.168.59.107:8443"
-        KUBECONFIG = "/home/eby/.kube/config"
+        KUBECONFIG = "/var/lib/jenkins/.kube/config"
     }
     
     stages {
