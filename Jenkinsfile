@@ -10,6 +10,8 @@ pipeline {
         CHART_NAME = 'myapp'
         CHART_VERSION = '0.${BUILD_NUMBER}'
         ECR_REPOSITORY = '095919053879.dkr.ecr.us-east-1.amazonaws.com'
+        SERVER_URL = "https://192.168.59.107:8443"
+        KUBECONFIG = "/home/eby/.kube/config"
     }
     
     stages {
@@ -91,7 +93,7 @@ pipeline {
 
         stage("Deployment from Github") {
             steps {
-                sh 'kubectl --server=https://192.168.59.107:8443 --insecure-skip-tls-verify create -f argocd.yaml'
+                sh "kubectl --kubeconfig=$KUBECONFIG --server=$SERVER_URL --insecure-skip-tls-verify create -f argocd.yaml"
                 // sh "argocd app create myapp     --repo https://github.com/EbYVarghese18/argocd.git     --path dev    --dest-server https://kubernetes.default.svc     --dest-namespace default     --sync-policy automated     --auto-prune     --self-heal    --revision HEAD     --project default"
             }
         }
