@@ -11,7 +11,7 @@ spec:
       valueFiles:
         - values.yaml
     path: .
-    repoURL: 095919053879.dkr.ecr.us-east-1.amazonaws.com/myapp
+    repoURL: 
     targetRevision: latest
   syncPolicy:
     automated:

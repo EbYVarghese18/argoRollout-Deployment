@@ -81,13 +81,20 @@ pipeline {
             }
         }
 
-        stage("Pull helm chart from ECR") {
+        // stage("Pull helm chart from ECR") {
+        //     steps {
+        //         sh "aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin ${ECR_REPOSITORY}"
+        //         sh "helm pull oci://${ECR_REPOSITORY}/${CHART_NAME} --version ${CHART_VERSION} --untar"
+        //         sh "argocd app create myapp     --repo https://github.com/EbYVarghese18/argocd.git     --path dev    --dest-server https://kubernetes.default.svc     --dest-namespace default     --sync-policy automated     --auto-prune     --self-heal    --revision HEAD     --project default"
+        //     }
+        // }
+
+        stage("Deployment from Github") {
             steps {
-                sh "aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin ${ECR_REPOSITORY}"
-                sh "helm pull oci://${ECR_REPOSITORY}/${CHART_NAME} --version ${CHART_VERSION} --untar"
-                sh "argocd app create ${APP_NAME} \ "
+                sh "argocd app create myapp     --repo https://github.com/EbYVarghese18/argocd.git     --path dev    --dest-server https://kubernetes.default.svc     --dest-namespace default     --sync-policy automated     --auto-prune     --self-heal    --revision HEAD     --project default"
             }
         }
+
 
         // stage('argo deployment') {
         //     steps {
